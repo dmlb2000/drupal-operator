@@ -1,0 +1,44 @@
+apiVersion: apps.dmlb2000.org/v1alpha1
+kind: Drupal
+metadata:
+  name: drupal-sample
+spec:
+    # The container image to use for the Drupal deployment.
+  containerImage: 'drupal:8.9-apache'
+  containerPort: 80
+  containerReplicas: 1
+
+  # The size of the files directory PVC.
+  filesPVCSize: 1Gi
+  filesPVCMountPath: /var/www/html/sites/default/files/
+
+  # Ignore creating a files PVC and just use this one.
+  # filesPVCName:
+
+  # Settings config map
+  settingsConfigMapName: drupal-sample-settings-config-map
+  settingsConfigMapMountPath: /var/www/html/sites/default/
+
+  # The size and mount path of the code PVC.
+  # codePVCSize: 1Gi
+  # codePVCMountPath: /var/www/html/
+
+  # Ignore creating a code PVC and just use this one.
+  # codePVCName:
+
+  # If a code PVC is specified an OpenSSH side car can be created.
+  # manageSideCar: true
+  # sideCarImage: ghcr.io/linuxserver/openssh-server
+  # sideCarEnvironment:
+  #   - PUID=0
+  #   - PGID=0
+  #   - TZ=US/Pacific
+  #   - PUBLIC_KEY=yourpublickey
+  #   - USER_NAME=root
+  # sideCarPort: 2222
+  # manageSideCarIngress: true
+  # sideCarHostname: ssh.example-drupal.test
+
+  # Set this to 'true' to have this operator manage Ingress for the site.
+  manageIngress: true
+  ingressHostname: example-drupal.test

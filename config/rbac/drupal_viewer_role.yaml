@@ -1,0 +1,20 @@
+# permissions for end users to view drupals.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: drupal-viewer-role
+rules:
+- apiGroups:
+  - apps.dmlb2000.org
+  resources:
+  - drupals
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps.dmlb2000.org
+  resources:
+  - drupals/status
+  verbs:
+  - get

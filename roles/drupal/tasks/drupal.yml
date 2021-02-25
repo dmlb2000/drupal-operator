@@ -1,0 +1,87 @@
+---
+- name: Set Volumes Object
+  set_fact:
+    drupal_volume_mounts: |
+      {% set res = [] %}
+      {% if code_pvc_name is defined %}
+      {% res.append({"mountPath": code_pvc_mount_path, "name": "drupal-code"}) %}
+      {% endif %}
+      {% res.append({"mountPath": settings_config_map_mount_path, "name": "drupal-settings"}) %}
+      {% res.append({"mountPath": files_pvc_mount_path, "name": "drupal-files" }) %}
+      {{ res }}
+    drupal_volumes: |
+      {% set res = [] %}
+      {% if code_pvc_name is defined %}
+      {% res.append({"persistentVolumeClaim": {"claimName": code_pvc_name}, "name": "drupal-code"}) %}
+      {% endif %}
+      {% res.append({"configMap": {"name": settings_config_map_name}, "name": "drupal-settings"}) %}
+      {% res.append({"persistentVolumeClaim": {"claimName": files_pvc_name}, "name": "drupal-files"}) %}
+      {{ res }}
+- name: Drupal Deployment.
+  k8s:
+    definition:
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: '{{ meta.name }}-drupal'
+        namespace: '{{ meta.namespace }}'
+      spec:
+        replicas: '{{ container_replicas }}'
+        selector:
+          matchLabels:
+            app: drupal
+        template:
+          metadata:
+            labels:
+              app: drupal
+          spec:
+            containers:
+              - name: drupal
+                image: '{{ container_image }}'
+                ports:
+                  - containerPort: '{{ container_port }}'
+                livenessProbe:
+                  tcpSocket:
+                    port: '{{ container_port }}'
+                  initialDelaySeconds: 60
+                readinessProbe:
+                  tcpSocket:
+                    port: '{{ container_port }}'
+                  initialDelaySeconds: 30
+                volumeMounts: "{{ drupal_volume_mounts }}"
+            volumes: "{{ drupal_volumes }}"
+
+- name: Drupal Service
+  k8s:
+    definition:
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: '{{ meta.name }}'
+        namespace: '{{ meta.namespace }}'
+      spec:
+        type: NodePort
+        ports:
+          - port: '{{ container_port }}'
+            targetPort: '{{ container_port }}'
+        selector:
+          app: 'drupal'
+
+- name: Drupal Ingress
+  k8s:
+    state: "{{ 'present' if manage_ingress else 'absent' }}"
+    definition:
+      apiVersion: extensions/v1beta1
+      kind: Ingress
+      metadata:
+        name: '{{ meta.name }}'
+        namespace: '{{ meta.namespace }}'
+      spec:
+        rules:
+          - host: '{{ ingress_hostname }}'
+            http:
+              paths:
+                - path: /
+                  backend:
+                    serviceName: '{{ meta.name }}'
+                    servicePort: '{{ container_port }}'

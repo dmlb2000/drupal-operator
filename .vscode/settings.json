@@ -1,0 +1,4 @@
+{
+    "python.languageServer": "Pylance",
+    "python.pythonPath": "/home/dmlb2000/.virtualenvs/ansible/bin/python"
+}

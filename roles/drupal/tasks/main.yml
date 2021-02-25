@@ -1,0 +1,5 @@
+---
+- name: Include PVC Tasks
+  import_tasks: tasks/pvcs.yml
+- name: Include Drupal Tasks
+  import_tasks: tasks/drupal.yml

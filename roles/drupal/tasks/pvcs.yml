@@ -1,0 +1,43 @@
+---
+- name: Drupal files PVC.
+  k8s:
+    definition:
+      kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: '{{ meta.name }}-files-pvc'
+        namespace: '{{ meta.namespace }}'
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: '{{ files_pvc_size }}'
+  when: files_pvc_name is not defined
+- name: Set Files PVC Name
+  set_fact:
+    files_pvc_name: '{{ meta.name }}-files-pvc'
+  when: files_pvc_name is not defined
+- name: Drupal Code PVC Block
+  block:
+    - name: Drupal Code PVC.
+      k8s:
+        definition:
+          kind: PersistentVolumeClaim
+          apiVersion: v1
+          metadata:
+            name: '{{ meta.name }}-code-pvc'
+            namespace: '{{ meta.namespace }}'
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: '{{ code_pvc_size }}'
+    - name: Set Code PVC Name
+      set_fact:
+        code_pvc_name: '{{ meta.name }}-code-pvc'
+  when:
+    - code_pvc_name is not defined
+    - code_pvc_size is defined
+    - code_pvc_mount_path is defined
