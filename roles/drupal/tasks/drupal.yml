@@ -4,7 +4,7 @@
     drupal_volume_mounts: |
       {% set res = [] %}
       {% if code_pvc_name is defined %}
-      {% res.append({"mountPath": code_pvc_mount_path, "name": "drupal-code"}) %}
+        {% res.append({"mountPath": code_pvc_mount_path, "name": "drupal-code"}) %}
       {% endif %}
       {% res.append({"mountPath": settings_config_map_mount_path, "name": "drupal-settings"}) %}
       {% res.append({"mountPath": files_pvc_mount_path, "name": "drupal-files" }) %}
@@ -12,7 +12,7 @@
     drupal_volumes: |
       {% set res = [] %}
       {% if code_pvc_name is defined %}
-      {% res.append({"persistentVolumeClaim": {"claimName": code_pvc_name}, "name": "drupal-code"}) %}
+        {% res.append({"persistentVolumeClaim": {"claimName": code_pvc_name}, "name": "drupal-code"}) %}
       {% endif %}
       {% res.append({"configMap": {"name": settings_config_map_name}, "name": "drupal-settings"}) %}
       {% res.append({"persistentVolumeClaim": {"claimName": files_pvc_name}, "name": "drupal-files"}) %}
