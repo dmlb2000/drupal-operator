@@ -20,4 +20,7 @@ resources:
 - ../manager
 images:
 - name: testing
-  newName: testing-operator
+  newName: quay.io/dmlb2000/drupal-operator
+  newTag: latest
+patches:
+- path: pull_policy/Always.yaml

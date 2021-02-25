@@ -23,8 +23,8 @@
       kind: Deployment
       apiVersion: apps/v1
       metadata:
-        name: '{{ meta.name }}-drupal'
-        namespace: '{{ meta.namespace }}'
+        name: '{{ ansible_operator_meta.name }}-drupal'
+        namespace: '{{ ansible_operator_meta.namespace }}'
       spec:
         replicas: '{{ container_replicas }}'
         selector:
@@ -57,8 +57,8 @@
       kind: Service
       apiVersion: v1
       metadata:
-        name: '{{ meta.name }}'
-        namespace: '{{ meta.namespace }}'
+        name: '{{ ansible_operator_meta.name }}'
+        namespace: '{{ ansible_operator_meta.namespace }}'
       spec:
         type: NodePort
         ports:
@@ -74,8 +74,8 @@
       apiVersion: extensions/v1beta1
       kind: Ingress
       metadata:
-        name: '{{ meta.name }}'
-        namespace: '{{ meta.namespace }}'
+        name: '{{ ansible_operator_meta.name }}'
+        namespace: '{{ ansible_operator_meta.namespace }}'
       spec:
         rules:
           - host: '{{ ingress_hostname }}'
@@ -83,5 +83,5 @@
               paths:
                 - path: /
                   backend:
-                    serviceName: '{{ meta.name }}'
+                    serviceName: '{{ ansible_operator_meta.name }}'
                     servicePort: '{{ container_port }}'
