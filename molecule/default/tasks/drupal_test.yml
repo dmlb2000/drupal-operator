@@ -12,8 +12,8 @@
       status: "True"
   vars:
     cr_file: 'apps_v1alpha1_drupal.yaml'
+  result: drupal_sample_result
 
-- name: Add assertions here
-  assert:
-    that: false
-    fail_msg: FIXME Add real assertions for your operator
+- name: Debug drupal sample result
+  debug:
+    msg: "{{ drupal_sample_result }}"
