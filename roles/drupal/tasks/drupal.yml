@@ -7,9 +7,7 @@
         {% set ignore = res.append({"mountPath": code_pvc_mount_path, "name": "drupal-code"}) %}
       {% endif %}
       {% set ignore = res.append({"mountPath": settings_config_map_mount_path, "name": "drupal-settings"}) %}
-      {% if code_pvc_name is not defined %}
-        {% set ignore = res.append({"mountPath": files_pvc_mount_path, "name": "drupal-files" }) %}
-      {% endif %}
+      {% set ignore = res.append({"mountPath": files_pvc_mount_path, "name": "drupal-files" }) %}
       {{ res }}
     drupal_volumes: |
       {% set res = [] %}
@@ -17,10 +15,13 @@
         {% set ignore = res.append({"persistentVolumeClaim": {"claimName": code_pvc_name}, "name": "drupal-code"}) %}
       {% endif %}
       {% set ignore = res.append({"configMap": {"name": settings_config_map_name}, "name": "drupal-settings"}) %}
-      {% if code_pvc_name is not defined %}
-        {% set ignore = res.append({"persistentVolumeClaim": {"claimName": files_pvc_name}, "name": "drupal-files"}) %}
-      {% endif %}
+      {% set ignore = res.append({"persistentVolumeClaim": {"claimName": files_pvc_name}, "name": "drupal-files"}) %}
       {{ res }}
+- name: Debug Some Things
+  debug:
+    msg: |
+      {{ drupal_volume_mounts | to_json }}
+      {{ drupal_volumes | to_json }}
 - name: Drupal Deployment.
   k8s:
     definition:
