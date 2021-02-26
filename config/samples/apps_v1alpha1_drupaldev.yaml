@@ -41,4 +41,4 @@ spec:
 
   # Set this to 'true' to have this operator manage Ingress for the site.
   manageIngress: true
-  ingressHostname: drupal.localdomain
+  ingressHostname: drupaldev.localdomain

@@ -18,8 +18,3 @@
       - 'apps_v1alpha1_drupal.yaml'
       - 'apps_v1alpha1_drupaldev.yaml'
   register: drupal_sample_result
-
-- name: Assert Drupal Sample was created
-  assert:
-    that:
-      - drupal_sample_result.result.metadata.name == 'drupal-sample'
