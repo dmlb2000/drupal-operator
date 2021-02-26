@@ -10,8 +10,13 @@
       type: Running
       reason: Successful
       status: "True"
+  loop: cr_files
+  loop_control:
+    index_var: cr_file
   vars:
-    cr_file: 'apps_v1alpha1_drupal.yaml'
+    cr_files:
+      - 'apps_v1alpha1_drupal.yaml'
+      - 'apps_v1alpha1_drupaldev.yaml'
   register: drupal_sample_result
 
 - name: Assert Drupal Sample was created
