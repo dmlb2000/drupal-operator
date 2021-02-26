@@ -30,7 +30,7 @@
                 'database' => 'sites/default/files/.ht.sqlite',
               );
 
-              $settings['hash_salt'] = '{{ drupal_hash_salt | default(lookup('password', '/dev/null chars=ascii_letters'), true) }}';
+              $settings['hash_salt'] = 'VcdDQkPeMQDluljTWKgN';
               $settings['trusted_host_patterns'] = ['{{ drupal_trusted_host_patterns | default('^.+$', true) }}'];
 
     - import_tasks: kustomize.yml

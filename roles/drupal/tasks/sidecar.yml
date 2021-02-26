@@ -56,10 +56,10 @@
       kind: Service
       apiVersion: v1
       metadata:
-        name: '{{ ansible_operator_meta.name }}'
+        name: '{{ ansible_operator_meta.name }}-ssh'
         namespace: '{{ ansible_operator_meta.namespace }}'
       spec:
-        type: NodePort
+        type: LoadBalancer
         ports:
           - port: '{{ side_car_port }}'
             targetPort: '{{ side_car_port }}'

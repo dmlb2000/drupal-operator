@@ -10,9 +10,9 @@
       type: Running
       reason: Successful
       status: "True"
-  loop: cr_files
+  loop: '{{ cr_files }}'
   loop_control:
-    index_var: cr_file
+    loop_var: cr_file
   vars:
     cr_files:
       - 'apps_v1alpha1_drupal.yaml'
