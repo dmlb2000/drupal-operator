@@ -52,6 +52,6 @@
         - name: Re-emit failure
           vars:
             failed_task:
-              result: '{{ ansible_failed_result }}'
+              result: '{{ ansible_failed_result | default(None) }}'
           fail:
             msg: '{{ failed_task }}'

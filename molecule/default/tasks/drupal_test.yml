@@ -12,8 +12,9 @@
       status: "True"
   vars:
     cr_file: 'apps_v1alpha1_drupal.yaml'
-  result: drupal_sample_result
+  register: drupal_sample_result
 
-- name: Debug drupal sample result
-  debug:
-    msg: "{{ drupal_sample_result }}"
+- name: Assert Drupal Sample was created
+  assert:
+    that:
+      - drupal_sample_result.result.metadata.name == 'drupal-sample'

@@ -13,6 +13,26 @@
         kind: Namespace
         name: '{{ namespace }}'
 
+    - name: Drupal Settings ConfigMap.
+      k8s:
+        definition:
+          kind: ConfigMap
+          apiVersion: v1
+          metadata:
+            name: 'drupal-sample-settings-config-map'
+            namespace: '{{ namespace }}'
+          data:
+            settings.php: |-
+              <?php
+
+              $databases['default']['default'] = array(
+                'driver' => 'sqlite',
+                'database' => 'sites/default/files/.ht.sqlite',
+              );
+
+              $settings['hash_salt'] = '{{ drupal_hash_salt | default(lookup('password', '/dev/null chars=ascii_letters'), true) }}';
+              $settings['trusted_host_patterns'] = ['{{ drupal_trusted_host_patterns | default('^.+$', true) }}'];
+
     - import_tasks: kustomize.yml
       vars:
         state: present
