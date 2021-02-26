@@ -1,18 +1,21 @@
 ---
-- name: SideCar Port Data
-  set_fact:
-    side_car_port_data:
-      - key: "{{ side_car_port }}"
-        value: "{{ ansible_operator_meta.namespace }}/{{ ansible_operator_meta.name }}-ssh:{{ side_car_port }}"
-- name: SideCar TCP Port Config Map
-  k8s:
-    definition:
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: tcp-services
-        namespace: ingress-nginx
-      data: "{{ side_car_port_data | items2dict }}"
+- name: SideCar Ingress Block
+  block:
+    - name: SideCar Port Data
+      set_fact:
+        side_car_port_data:
+          - key: "{{ side_car_port }}"
+            value: "{{ ansible_operator_meta.namespace }}/{{ ansible_operator_meta.name }}-ssh:{{ side_car_port }}"
+    - name: SideCar TCP Port Config Map
+      k8s:
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: tcp-services
+            namespace: ingress-nginx
+          data: "{{ side_car_port_data | items2dict }}"
+  when: manage_side_car_ingress is defined and manage_side_car_ingress
 - name: SideCar Deployment
   k8s:
     definition:
