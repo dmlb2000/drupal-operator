@@ -2,6 +2,15 @@
 - hosts: localhost
   vars:
     nginx_ingress_version: "v0.44.0"
+    nginx_url_parts:
+      - 'https:'
+      - ''
+      - raw.githubusercontent.com
+      - kubernetes
+      - ingress-nginx
+      - "controller-{{ nginx_ingress_version }}"
+      - deploy
+    nginx_ingress_url: "{{ nginx_url_parts | join('/') }}"
     yaml_files:
       - remote_path: static/provider/cloud/deploy.yaml
         local_path: deploy.yaml
@@ -14,7 +23,7 @@
       changed_when: false
     - name: Download Nginx Operator Deploy
       get_url:
-        url: "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-{{ nginx_ingress_version }}/deploy/{{ item.remote_path }}"
+        url: "{{ nginx_ingress_url }}/{{ item.remote_path }}"
         dest: "{{ tempdir_nginx_operator.path }}/{{ item.local_path }}"
       changed_when: false
       loop: "{{ yaml_files }}"
