@@ -30,15 +30,15 @@ spec:
   manageSideCar: true
   sideCarImage: ghcr.io/linuxserver/openssh-server
   sideCarEnvironment:
-    - key: PUID
+    - name: PUID
       value: '0'
-    - key: PGID
+    - name: PGID
       value: '0'
-    - key: TZ
+    - name: TZ
       value: US/Pacific
-    - key: PUBLIC_KEY
+    - name: PUBLIC_KEY
       value: yourpublickey
-    - key: USER_NAME
+    - name: USER_NAME
       value: root
   sideCarPort: 2222
   manageSideCarIngress: true
