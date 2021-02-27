@@ -39,6 +39,7 @@
                 image: '{{ side_car_image }}'
                 ports:
                   - containerPort: '{{ side_car_port }}'
+                env: "{{ side_car_environment }}"
                 livenessProbe:
                   tcpSocket:
                     port: '{{ side_car_port }}'

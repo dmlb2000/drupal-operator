@@ -30,11 +30,16 @@ spec:
   manageSideCar: true
   sideCarImage: ghcr.io/linuxserver/openssh-server
   sideCarEnvironment:
-    - PUID=0
-    - PGID=0
-    - TZ=US/Pacific
-    - PUBLIC_KEY=yourpublickey
-    - USER_NAME=root
+    - key: PUID
+      value: '0'
+    - key: PGID
+      value: '0'
+    - key: TZ
+      value: US/Pacific
+    - key: PUBLIC_KEY
+      value: yourpublickey
+    - key: USER_NAME
+      value: root
   sideCarPort: 2222
   manageSideCarIngress: true
   sideCarHostname: ssh-drupal.localdomain
