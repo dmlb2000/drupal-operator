@@ -4,7 +4,7 @@
     - name: SideCar Port Data
       set_fact:
         side_car_port_data:
-          - key: "{{ side_car_port }}"
+          - key: "{{ side_car_port | int }}"
             value: "{{ ansible_operator_meta.namespace }}/{{ ansible_operator_meta.name }}-ssh:{{ side_car_port }}"
     - name: SideCar TCP Port Config Map
       k8s:
@@ -28,14 +28,14 @@
         replicas: 1
         selector:
           matchLabels:
-            app: ssh
+            app: drupal-ssh
         template:
           metadata:
             labels:
-              app: ssh
+              app: drupal-ssh
           spec:
             containers:
-              - name: ssh
+              - name: drupal-ssh
                 image: '{{ side_car_image }}'
                 ports:
                   - containerPort: '{{ side_car_port }}'
@@ -66,4 +66,4 @@
             targetPort: '{{ side_car_port }}'
             protocol: TCP
         selector:
-          app: 'drupal'
+          app: drupal-ssh
