@@ -39,6 +39,7 @@
               - name: drupal
                 image: '{{ container_image }}'
                 hostname: '{{ ingress_hostname }}'
+                command: '{{ container_command | default(omit) }}'
                 ports:
                   - containerPort: '{{ container_port }}'
                 livenessProbe:

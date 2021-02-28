@@ -38,6 +38,7 @@
               - name: drupal-ssh
                 image: '{{ side_car_image }}'
                 hostname: '{{ side_car_hostname }}'
+                command: '{{ side_car_command | default(omit) }}'
                 ports:
                   - containerPort: '{{ side_car_port }}'
                 env: "{{ side_car_environment }}"
