@@ -28,15 +28,16 @@
         replicas: 1
         selector:
           matchLabels:
-            app: drupal-ssh
+            app: '{{ ansible_operator_meta.name }}-ssh'
         template:
           metadata:
             labels:
-              app: drupal-ssh
+              app: '{{ ansible_operator_meta.name }}-ssh'
           spec:
             containers:
               - name: drupal-ssh
                 image: '{{ side_car_image }}'
+                hostname: '{{ side_car_hostname }}'
                 ports:
                   - containerPort: '{{ side_car_port }}'
                 env: "{{ side_car_environment }}"
@@ -66,4 +67,4 @@
             targetPort: '{{ side_car_port }}'
             protocol: TCP
         selector:
-          app: drupal-ssh
+          app: '{{ ansible_operator_meta.name }}-ssh'

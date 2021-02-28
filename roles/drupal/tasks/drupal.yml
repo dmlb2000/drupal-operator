@@ -29,15 +29,16 @@
         replicas: '{{ container_replicas }}'
         selector:
           matchLabels:
-            app: drupal
+            app: '{{ ansible_operator_meta.name }}-drupal'
         template:
           metadata:
             labels:
-              app: drupal
+              app: '{{ ansible_operator_meta.name }}-drupal'
           spec:
             containers:
               - name: drupal
                 image: '{{ container_image }}'
+                hostname: '{{ ingress_hostname }}'
                 ports:
                   - containerPort: '{{ container_port }}'
                 livenessProbe:
@@ -65,7 +66,7 @@
           - port: '{{ container_port }}'
             targetPort: '{{ container_port }}'
         selector:
-          app: 'drupal'
+          app: '{{ ansible_operator_meta.name }}-drupal'
 
 - name: Drupal Ingress
   k8s:

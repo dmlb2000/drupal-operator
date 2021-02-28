@@ -36,10 +36,10 @@ spec:
       value: '0'
     - name: TZ
       value: US/Pacific
-    - name: PUBLIC_KEY
-      value: yourpublickey
     - name: USER_NAME
       value: root
+    - name: PUBLIC_KEY
+      value: yourpublickey
   sideCarPort: 2222
   manageSideCarIngress: true
   sideCarHostname: ssh-drupal.localdomain
