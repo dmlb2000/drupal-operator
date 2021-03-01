@@ -27,17 +27,17 @@ spec:
   # codePVCName:
 
   # If a code PVC is specified an OpenSSH side car can be created.
-  # manageSideCar: true
-  # sideCarImage: ghcr.io/linuxserver/openssh-server
-  # sideCarEnvironment:
+  # manageDev: true
+  # devImage: ghcr.io/linuxserver/openssh-server
+  # devEnvironment:
   #   - PUID=0
   #   - PGID=0
   #   - TZ=US/Pacific
   #   - PUBLIC_KEY=yourpublickey
   #   - USER_NAME=root
-  # sideCarPort: 2222
-  # manageSideCarIngress: true
-  # sideCarHostname: ssh.example-drupal.test
+  # devPort: 2222
+  # manageDevIngress: true
+  # devHostname: ssh.example-drupal.test
 
   # Set this to 'true' to have this operator manage Ingress for the site.
   manageIngress: true

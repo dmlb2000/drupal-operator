@@ -1,12 +1,12 @@
 ---
-- name: SideCar Ingress Block
+- name: Development Ingress Block
   block:
-    - name: SideCar Port Data
+    - name: Development Port Data
       set_fact:
         side_car_port_data:
-          - key: "{{ side_car_port | int }}"
-            value: "{{ ansible_operator_meta.namespace }}/{{ ansible_operator_meta.name }}-ssh:{{ side_car_port }}"
-    - name: SideCar TCP Port Config Map
+          - key: "{{ dev_port | int }}"
+            value: "{{ ansible_operator_meta.namespace }}/{{ ansible_operator_meta.name }}-ssh:{{ dev_port }}"
+    - name: Development TCP Port Config Map
       k8s:
         definition:
           apiVersion: v1
@@ -15,8 +15,8 @@
             name: tcp-services
             namespace: ingress-nginx
           data: "{{ side_car_port_data | items2dict }}"
-  when: manage_side_car_ingress is defined and manage_side_car_ingress
-- name: SideCar Deployment
+  when: manage_dev_ingress is defined and manage_dev_ingress
+- name: Development Deployment
   k8s:
     definition:
       kind: Deployment
@@ -36,24 +36,24 @@
           spec:
             containers:
               - name: drupal-ssh
-                image: '{{ side_car_image }}'
-                hostname: '{{ side_car_hostname }}'
-                command: '{{ side_car_command | default(omit) }}'
+                image: '{{ dev_image }}'
+                hostname: '{{ dev_hostname }}'
+                command: '{{ dev_command | default(omit) }}'
                 ports:
-                  - containerPort: '{{ side_car_port }}'
-                env: "{{ side_car_environment }}"
+                  - containerPort: '{{ dev_port }}'
+                env: "{{ dev_environment }}"
                 livenessProbe:
                   tcpSocket:
-                    port: '{{ side_car_port }}'
+                    port: '{{ dev_port }}'
                   initialDelaySeconds: 60
                 readinessProbe:
                   tcpSocket:
-                    port: '{{ side_car_port }}'
+                    port: '{{ dev_port }}'
                   initialDelaySeconds: 30
                 volumeMounts: "{{ drupal_volume_mounts }}"
             volumes: "{{ drupal_volumes }}"
 
-- name: SideCar Service
+- name: Development Service
   k8s:
     definition:
       kind: Service
@@ -64,8 +64,8 @@
       spec:
         type: LoadBalancer
         ports:
-          - port: '{{ side_car_port }}'
-            targetPort: '{{ side_car_port }}'
+          - port: '{{ dev_port }}'
+            targetPort: '{{ dev_port }}'
             protocol: TCP
         selector:
           app: '{{ ansible_operator_meta.name }}-ssh'

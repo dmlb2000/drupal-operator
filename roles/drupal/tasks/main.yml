@@ -4,5 +4,5 @@
 - name: Include Drupal Tasks
   import_tasks: tasks/drupal.yml
 - name: Include Side Car Tasks
-  import_tasks: tasks/sidecar.yml
-  when: manage_side_car is defined and manage_side_car
+  import_tasks: tasks/dev.yml
+  when: manage_dev is defined and manage_dev
