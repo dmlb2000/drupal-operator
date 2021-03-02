@@ -45,8 +45,8 @@ spec:
 
   # Separate PHP-FPM Container in the Pod
   # phpFpmSideCar: false
-  # phpFpmContainerCommand: /usr/sbin/php-fpm -OF
-  # phpFpmContainerPort: 9000
+  # phpFpmSideCarCommand: /usr/sbin/php-fpm -OF
+  # phpFpmSideCarPort: 9000
 
   # define init containers if you want
   # initContainers: []

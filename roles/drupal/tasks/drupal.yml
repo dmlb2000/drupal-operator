@@ -61,25 +61,27 @@
         initialDelaySeconds: 30
       volumeMounts: "{{ drupal_volume_mounts }}"
 
-- name: Set PHP-FPM Container if using php-fpm
+- name: Set PHP-FPM Side Car if using php-fpm
   set_fact:
-    php_fpm_container:
+    php_fpm_side_car:
       name: php-fpm
       image: '{{ container_image }}'
-      hostname: '{{ container_hostname }}'
-      command: '{{ php_fpm_container_command | default(omit) }}'
+      hostname: '{{ ingress_hostname }}'
+      command: '{{ php_fpm_side_car_command | default(omit) }}'
       ports:
-        - containerPort: '{{ php_fpm_container_port }}'
+        - containerPort: '{{ php_fpm_side_car_port }}'
       livenessProbe:
         tcpSocket:
-          port: '{{ php_fpm_container_port }}'
+          port: '{{ php_fpm_side_car_port }}'
         initialDelaySeconds: 60
       readinessProbe:
         tcpSocket:
-          port: '{{ php_fpm_container_port }}'
+          port: '{{ php_fpm_side_car_port }}'
         initialDelaySeconds: 30
       volumeMounts: "{{ drupal_volume_mounts }}"
-  when: php_fpm_side_car is defined and php_fpm_side_car
+  when:
+    - php_fpm_side_car is defined and php_fpm_side_car
+    - php_fpm_side_car_port is defined
 
 - name: Drupal Deployment.
   k8s:
@@ -101,8 +103,8 @@
           spec:
             containers: >
               {%- set res = [drupal_container] %}
-              {%- if php_fpm_container is defined %}
-              {%-   set ignore = res.append(php_fpm_container) %}
+              {%- if php_fpm_side_car is defined %}
+              {%-   set ignore = res.append(php_fpm_side_car) %}
               {%- endif %}
               {{- res -}}
             initContainers: "{{ init_containers | default(omit) }}"
