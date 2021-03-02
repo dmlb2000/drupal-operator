@@ -5,7 +5,8 @@ metadata:
 spec:
     # The container image to use for the Drupal deployment.
   containerImage: 'geerlingguy/drupal-vm:latest'
-  containerCommand: '/usr/sbin/httpd -DFOREGROUND'
+  containerCommand: ['/usr/sbin/httpd']
+  containerArgs: ['-DFOREGROUND']
   containerPort: 80
   containerReplicas: 1
 
@@ -51,7 +52,8 @@ spec:
 
   # Separate PHP-FPM Container in the Pod
   phpFpmSideCar: true
-  phpFpmSideCarCommand: /usr/sbin/php-fpm -OF
+  phpFpmSideCarCommand: ['/usr/sbin/php-fpm']
+  phpFpmSideCarArgs: ['-OF']
   phpFpmSideCarPort: 9000
 
   # add the drupal volumes to the init containers

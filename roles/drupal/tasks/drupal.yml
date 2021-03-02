@@ -49,6 +49,7 @@
       image: '{{ container_image }}'
       hostname: '{{ ingress_hostname }}'
       command: '{{ container_command | default(omit) }}'
+      args: '{{ container_args | default(omit) }}'
       ports:
         - containerPort: '{{ container_port }}'
       livenessProbe:
@@ -68,6 +69,7 @@
       image: '{{ container_image }}'
       hostname: '{{ ingress_hostname }}'
       command: '{{ php_fpm_side_car_command | default(omit) }}'
+      args: '{{ php_fpm_side_car_args | default(omit) }}'
       ports:
         - containerPort: '{{ php_fpm_side_car_port }}'
       livenessProbe:

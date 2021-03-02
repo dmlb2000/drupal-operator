@@ -39,6 +39,7 @@
                 image: '{{ dev_image }}'
                 hostname: '{{ dev_hostname }}'
                 command: '{{ dev_command | default(omit) }}'
+                args: '{{ dev_args | default(omit) }}'
                 ports:
                   - containerPort: '{{ dev_port }}'
                 env: "{{ dev_environment }}"
