@@ -35,12 +35,15 @@
 
 - name: Add Volumes to Init containers
   set_fact:
-    __something_to_ignore: |-
-      {%- for container in init_containers %}
-      {%-   set x = container.__setitem__("volumeMounts", drupal_volume_mounts) %}
-      {%- endfor %}
-      ignore this
-  when: init_containers is defined and init_containers and init_containers_with_volumes is defined and init_containers_with_volumes
+    __new_containers: |-
+      {%- set item.volumeMounts = [drupal_volume_mounts] %}
+      {{ item }}
+  loop: "{{ init_containers | default([]) }}"
+  register: init_containers_results
+  when: init_containers_with_volumes is defined and init_containers_with_volumes
+
+- debug:
+    msg: "{{ init_container_results.results }}"
 
 - name: Set Drupal Container
   set_fact:
