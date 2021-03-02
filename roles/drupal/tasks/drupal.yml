@@ -104,11 +104,11 @@
               app: '{{ ansible_operator_meta.name }}-drupal'
           spec:
             containers: >
-              {%- set res = [drupal_container] %}
-              {%- if php_fpm_side_car is defined %}
-              {%-   set ignore = res.append(php_fpm_side_car) %}
-              {%- endif %}
-              {{- res -}}
+              {%- if php_fpm_side_car is defined -%}
+              {{ [drupal_container, php_fpm_side_car] }}
+              {%- else -%}
+              {{ [drupal_container] }}
+              {%- endif -%}
             initContainers: "{{ init_containers | default(omit) }}"
             volumes: "{{ drupal_volumes }}"
 
