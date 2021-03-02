@@ -93,7 +93,7 @@
               app: '{{ ansible_operator_meta.name }}-drupal'
           spec:
             containers: >
-              {%- res = [drupal_container] %}
+              {%- set res = [drupal_container] %}
               {%- if php_fpm_container is defined %}
               {%-   set ignore = res.append(php_fpm_container) %}
               {%- endif %}

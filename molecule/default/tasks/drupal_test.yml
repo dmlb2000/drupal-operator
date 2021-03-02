@@ -17,4 +17,5 @@
     cr_files:
       - 'apps_v1alpha1_drupal.yaml'
       - 'apps_v1alpha1_drupaldev.yaml'
+      - 'apps_v1alpha1_drupalvm.yaml'
   register: drupal_sample_result
