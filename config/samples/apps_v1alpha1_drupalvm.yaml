@@ -10,7 +10,7 @@ spec:
 
   # The size of the files directory PVC.
   # filesPVCSize: 1Gi
-  # filesPVCMountPath: /var/www/html/sites/default/files/
+  # filesPVCMountPath: /var/www/drupalvm/drupal/web/sites/default/files/
 
   # Ignore creating a files PVC and just use this one.
   # filesPVCName:

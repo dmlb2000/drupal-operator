@@ -1,23 +1,27 @@
 ---
-- name: Drupal files PVC.
-  k8s:
-    definition:
-      kind: PersistentVolumeClaim
-      apiVersion: v1
-      metadata:
-        name: '{{ ansible_operator_meta.name }}-files-pvc'
-        namespace: '{{ ansible_operator_meta.namespace }}'
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: '{{ files_pvc_size }}'
-  when: files_pvc_name is not defined
-- name: Set Files PVC Name
-  set_fact:
-    files_pvc_name: '{{ ansible_operator_meta.name }}-files-pvc'
-  when: files_pvc_name is not defined
+- name: Drupal Files PVC Block
+  block:
+    - name: Drupal files PVC.
+      k8s:
+        definition:
+          kind: PersistentVolumeClaim
+          apiVersion: v1
+          metadata:
+            name: '{{ ansible_operator_meta.name }}-files-pvc'
+            namespace: '{{ ansible_operator_meta.namespace }}'
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: '{{ files_pvc_size }}'
+    - name: Set Files PVC Name
+      set_fact:
+        files_pvc_name: '{{ ansible_operator_meta.name }}-files-pvc'
+  when:
+    - files_pvc_name is not defined
+    - files_pvc_size is defined
+    - files_pvc_mount_path is defined
 - name: Drupal Code PVC Block
   block:
     - name: Drupal Code PVC.
