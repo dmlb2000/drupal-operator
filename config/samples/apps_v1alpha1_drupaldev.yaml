@@ -47,3 +47,11 @@ spec:
   # Set this to 'true' to have this operator manage Ingress for the site.
   manageIngress: true
   ingressHostname: drupaldev.localdomain
+
+  # Separate PHP-FPM Container in the Pod
+  # phpFpmSideCar: false
+  # phpFpmContainerCommand: /usr/sbin/php-fpm -OF
+  # phpFpmContainerPort: 9000
+
+  # define init containers if you want
+  # initContainers: []

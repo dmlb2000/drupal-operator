@@ -9,6 +9,7 @@
         persistentVolumeClaim:
           claimName: "{{ code_pvc_name }}"
   when: code_pvc_name is defined
+
 - name: Set Volumes Object (if not code)
   set_fact:
     drupal_volume_mounts:
@@ -24,6 +25,46 @@
         persistentVolumeClaim:
           claimName: "{{ files_pvc_name }}"
   when: code_pvc_name is not defined
+
+- name: Set Drupal Container
+  set_fact:
+    drupal_container:
+      name: drupal
+      image: '{{ container_image }}'
+      hostname: '{{ ingress_hostname }}'
+      command: '{{ container_command | default(omit) }}'
+      ports:
+        - containerPort: '{{ container_port }}'
+      livenessProbe:
+        tcpSocket:
+          port: '{{ container_port }}'
+        initialDelaySeconds: 60
+      readinessProbe:
+        tcpSocket:
+          port: '{{ container_port }}'
+        initialDelaySeconds: 30
+      volumeMounts: "{{ drupal_volume_mounts }}"
+
+- name: Set PHP-FPM Container if using php-fpm
+  set_fact:
+    php_fpm_container:
+      name: php-fpm
+      image: '{{ container_image }}'
+      hostname: '{{ container_hostname }}'
+      command: '{{ php_fpm_container_command | default(omit) }}'
+      ports:
+        - containerPort: '{{ php_fpm_container_port }}'
+      livenessProbe:
+        tcpSocket:
+          port: '{{ php_fpm_container_port }}'
+        initialDelaySeconds: 60
+      readinessProbe:
+        tcpSocket:
+          port: '{{ php_fpm_container_port }}'
+        initialDelaySeconds: 30
+      volumeMounts: "{{ drupal_volume_mounts }}"
+  when: php_fpm_side_car is defined and php_fpm_side_car
+
 - name: Drupal Deployment.
   k8s:
     definition:
@@ -42,22 +83,13 @@
             labels:
               app: '{{ ansible_operator_meta.name }}-drupal'
           spec:
-            containers:
-              - name: drupal
-                image: '{{ container_image }}'
-                hostname: '{{ ingress_hostname }}'
-                command: '{{ container_command | default(omit) }}'
-                ports:
-                  - containerPort: '{{ container_port }}'
-                livenessProbe:
-                  tcpSocket:
-                    port: '{{ container_port }}'
-                  initialDelaySeconds: 60
-                readinessProbe:
-                  tcpSocket:
-                    port: '{{ container_port }}'
-                  initialDelaySeconds: 30
-                volumeMounts: "{{ drupal_volume_mounts }}"
+            containers: >
+              {%- res = [drupal_container] %}
+              {%- if php_fpm_container is defined %}
+              {%-   set ignore = res.append(php_fpm_container) %}
+              {%- endif %}
+              {{- res -}}
+            initContainers: "{{ init_containers | default(omit) }}"
             volumes: "{{ drupal_volumes }}"
 
 - name: Drupal Service
