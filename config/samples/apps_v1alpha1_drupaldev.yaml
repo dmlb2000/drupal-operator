@@ -9,15 +9,15 @@ spec:
   containerReplicas: 1
 
   # The size of the files directory PVC.
-  filesPVCSize: 1Gi
-  filesPVCMountPath: /var/www/html/sites/default/files/
+  # filesPVCSize: 1Gi
+  # filesPVCMountPath: /var/www/html/sites/default/files/
 
   # Ignore creating a files PVC and just use this one.
   # filesPVCName:
 
   # Settings config map
-  settingsConfigMapName: drupal-sample-settings-config-map
-  settingsConfigMapMountPath: /var/www/html/sites/default/
+  # settingsConfigMapName: drupal-sample-settings-config-map
+  # settingsConfigMapMountPath: /var/www/html/sites/default/
 
   # The size and mount path of the code PVC.
   codePVCSize: 1Gi

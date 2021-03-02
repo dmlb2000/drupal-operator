@@ -39,7 +39,7 @@
       {%- for container in init_containers %}
       {%-   set x = container.__setitem__("volumeMounts", drupal_volume_mounts) %}
       {%- endfor %}
-      {{ x }}
+      ignore this
   when: init_containers is defined and init_containers and init_containers_with_volumes is defined and init_containers_with_volumes
 
 - name: Set Drupal Container

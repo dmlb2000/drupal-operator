@@ -5,6 +5,7 @@ metadata:
 spec:
     # The container image to use for the Drupal deployment.
   containerImage: 'geerlingguy/drupal-vm:latest'
+  containerCommand: '/usr/sbin/httpd -DFOREGROUND'
   containerPort: 80
   containerReplicas: 1
 
