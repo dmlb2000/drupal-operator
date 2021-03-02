@@ -2,4 +2,5 @@
 resources:
 - apps_v1alpha1_drupal.yaml
 - apps_v1alpha1_drupaldev.yaml
+- apps_v1alpha1_drupalvm.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

@@ -26,6 +26,15 @@
           claimName: "{{ files_pvc_name }}"
   when: code_pvc_name is not defined
 
+- name: Add Volumes to Init containers
+  set_fact:
+    __something_to_ignore: |-
+      {%- for container in init_containers %}
+      {%-   set x = container.__setitem__("volumeMounts", drupal_volume_mounts) %}
+      {%- endfor %}
+      {{ x }}
+  when: init_containers is defined and init_containers and init_containers_with_volumes is defined and init_containers_with_volumes
+
 - name: Set Drupal Container
   set_fact:
     drupal_container:

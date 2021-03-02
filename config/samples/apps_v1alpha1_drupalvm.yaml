@@ -1,0 +1,70 @@
+apiVersion: apps.dmlb2000.org/v1alpha1
+kind: Drupal
+metadata:
+  name: drupal-sample-dev
+spec:
+    # The container image to use for the Drupal deployment.
+  containerImage: 'geerlingguy/drupal-vm:latest'
+  containerPort: 80
+  containerReplicas: 1
+
+  # The size of the files directory PVC.
+  # filesPVCSize: 1Gi
+  # filesPVCMountPath: /var/www/html/sites/default/files/
+
+  # Ignore creating a files PVC and just use this one.
+  # filesPVCName:
+
+  # Settings config map
+  # settingsConfigMapName: drupal-sample-settings-config-map
+  # settingsConfigMapMountPath: /var/www/html/sites/default/
+
+  # The size and mount path of the code PVC.
+  codePVCSize: 1Gi
+  codePVCMountPath: /var/www/drupalvm/drupal
+
+  # Ignore creating a code PVC and just use this one.
+  # codePVCName:
+
+  # If a code PVC is specified an OpenSSH side car can be created.
+  manageDev: true
+  devImage: ghcr.io/linuxserver/openssh-server
+  devEnvironment:
+    - name: PUID
+      value: '0'
+    - name: PGID
+      value: '0'
+    - name: TZ
+      value: US/Pacific
+    - name: USER_NAME
+      value: root
+    - name: PUBLIC_KEY
+      value: yourpublickey
+  devPort: 2222
+  manageDevIngress: true
+  devHostname: ssh-drupalvm.localdomain
+
+  # Set this to 'true' to have this operator manage Ingress for the site.
+  manageIngress: true
+  ingressHostname: drupalvm.localdomain
+
+  # Separate PHP-FPM Container in the Pod
+  phpFpmSideCar: true
+  phpFpmContainerCommand: /usr/sbin/php-fpm -OF
+  phpFpmContainerPort: 9000
+
+  # add the drupal volumes to the init containers
+  initContainersWithVolumes: true
+  # define init containers if you want
+  initContainers:
+    - name: create-drupal-project
+      image: 'geerlingguy/drupal-vm:latest'
+      hostname: drupalvm.localdomain
+      command: composer create-project drupal-composer/drupal-project:9.x-dev /var/www/drupalvm/drupal --stability dev --no-interaction
+      env:
+        - name: COMPOSER_ALLOW_SUPERUSER
+          value: '1'
+    - name: install-drupal
+      image: 'geerlingguy/drupal-vm:latest'
+      hostname: drupalvm.localdomain
+      command: drush si standard --root=$PROJECT_PATH/drupal/web -y --db-url='sqlite://sites/default/files/.ht.sqlite' --site-name='Drupal VM' --account-name=admin --account-pass=admin
