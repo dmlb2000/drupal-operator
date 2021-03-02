@@ -64,7 +64,7 @@
 
 - name: Set PHP-FPM Side Car if using php-fpm
   set_fact:
-    php_fpm_side_car:
+    php_fpm_side_car_spec:
       name: php-fpm
       image: '{{ container_image }}'
       hostname: '{{ ingress_hostname }}'
@@ -104,8 +104,8 @@
               app: '{{ ansible_operator_meta.name }}-drupal'
           spec:
             containers: >
-              {%- if php_fpm_side_car is defined -%}
-              {{ [drupal_container, php_fpm_side_car] }}
+              {%- if php_fpm_side_car is defined and php_fpm_side_car -%}
+              {{ [drupal_container, php_fpm_side_car_spec] }}
               {%- else -%}
               {{ [drupal_container] }}
               {%- endif -%}
