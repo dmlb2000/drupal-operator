@@ -44,6 +44,7 @@
 
 - debug:
     msg: "{{ init_container_results.results }}"
+  when: init_containers_results is defined
 
 - name: Set Drupal Container
   set_fact:
