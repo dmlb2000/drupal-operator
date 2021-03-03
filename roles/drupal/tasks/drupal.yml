@@ -47,8 +47,7 @@
   when: init_containers_with_volumes is defined and init_containers_with_volumes
 
 - debug:
-    msg: "{{ init_container_results.results }}"
-  when: init_containers_results is defined
+    msg: "{{ init_containers_results.results }}"
 
 - name: Set Drupal Container
   set_fact:
