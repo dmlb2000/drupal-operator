@@ -40,7 +40,7 @@
 - name: Add Volumes to Init containers
   set_fact:
     __new_containers: |-
-      {%- set item.volumeMounts = [drupal_volume_mounts] %}
+      {%- set foo = item.__setattr__("volumeMounts", drupal_volume_mounts) %}
       {{ item }}
   loop: "{{ init_containers | default([]) }}"
   register: init_containers_results
@@ -48,6 +48,8 @@
 
 - debug:
     msg: "{{ init_containers_results.results }}"
+- debug:
+    msg: "{{ init_containers | default([]) }}"
 
 - name: Set Drupal Container
   set_fact:
