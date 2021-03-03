@@ -5,7 +5,7 @@ metadata:
 spec:
     # The container image to use for the Drupal deployment.
   containerImage: 'geerlingguy/drupal-vm:latest'
-  containerCommand: ['/usr/sbin/httpd']
+  containerCommand: ['/usr/sbin/apache2']
   containerArgs: ['-DFOREGROUND']
   containerPort: 80
   containerReplicas: 1
@@ -52,7 +52,7 @@ spec:
 
   # Separate PHP-FPM Container in the Pod
   phpFpmSideCar: true
-  phpFpmSideCarCommand: ['/usr/sbin/php-fpm']
+  phpFpmSideCarCommand: ['/usr/sbin/php-fpm7.4']
   phpFpmSideCarArgs: ['-OF']
   phpFpmSideCarPort: 9000
 
@@ -63,11 +63,26 @@ spec:
     - name: create-drupal-project
       image: 'geerlingguy/drupal-vm:latest'
       hostname: drupalvm.localdomain
-      command: composer create-project drupal-composer/drupal-project:9.x-dev /var/www/drupalvm/drupal --stability dev --no-interaction
+      command: ['/usr/bin/composer']
+      args:
+        - create-project
+        - drupal-composer/drupal-project:9.x-dev
+        - /var/www/drupalvm/drupal
+        - --stability=dev
+        - --no-interaction
       env:
         - name: COMPOSER_ALLOW_SUPERUSER
           value: '1'
     - name: install-drupal
       image: 'geerlingguy/drupal-vm:latest'
       hostname: drupalvm.localdomain
-      command: drush si standard --root=$PROJECT_PATH/drupal/web -y --db-url='sqlite://sites/default/files/.ht.sqlite' --site-name='Drupal VM' --account-name=admin --account-pass=admin
+      command: ['/usr/local/bin/drush']
+      args:
+        - si
+        - standard
+        - --root=/var/www/drupalvm/drupal
+        - -y
+        - --db-url='sqlite://sites/default/files/.ht.sqlite'
+        - --site-name='Drupal VM'
+        - --account-name=admin
+        - --account-pass=admin
