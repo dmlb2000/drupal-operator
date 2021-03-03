@@ -33,9 +33,12 @@
     - settings_config_map_name is defined
     - settings_config_map_mount_path is defined
 
-- name: Set debugging
+- name: Set Containers when we don't do volumes
   set_fact:
-    init_containers_results: {}
+    __new_containers: "{{ item }}"
+  loop: "{{ init_containers | default([]) }}"
+  register: init_containers_results
+  when: init_containers_with_volumes is not defined or not init_containers_with_volumes
 
 - name: Add Volumes to Init containers
   set_fact:
@@ -46,10 +49,9 @@
   register: init_containers_results
   when: init_containers_with_volumes is defined and init_containers_with_volumes
 
-- debug:
-    msg: "{{ init_containers_results.results }}"
-- debug:
-    msg: "{{ init_containers | default([]) }}"
+- name: Create New Init Containers Fact
+  set_fact:
+    new_init_containers: "{{ init_containers_results.results | map(attribute='ansible_facts.__new_containers') | list }}"
 
 - name: Set Drupal Container
   set_fact:
@@ -118,7 +120,7 @@
               {%- else -%}
               {{ [drupal_container] }}
               {%- endif -%}
-            initContainers: "{{ init_containers | default(omit) }}"
+            initContainers: "{{ new_init_containers | default(omit) }}"
             volumes: "{{ drupal_volumes }}"
 
 - name: Drupal Service
