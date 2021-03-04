@@ -73,7 +73,7 @@
         initialDelaySeconds: 30
       volumeMounts: "{{ drupal_volume_mounts }}"
 
-- name: Set PHP-FPM Side Car if using php-fpm
+- name: Set PHP-FPM Side Car if using php-fpm (with port)
   set_fact:
     php_fpm_side_car_spec:
       name: php-fpm
@@ -95,6 +95,19 @@
   when:
     - php_fpm_side_car is defined and php_fpm_side_car
     - php_fpm_side_car_port is defined
+
+- name: Set PHP-FPM Side Car if using php-fpm (without port)
+  set_fact:
+    php_fpm_side_car_spec:
+      name: php-fpm
+      image: '{{ container_image }}'
+      hostname: '{{ ingress_hostname }}'
+      command: '{{ php_fpm_side_car_command | default(omit) }}'
+      args: '{{ php_fpm_side_car_args | default(omit) }}'
+      volumeMounts: "{{ drupal_volume_mounts }}"
+  when:
+    - php_fpm_side_car is defined and php_fpm_side_car
+    - php_fpm_side_car_port is not defined
 
 - name: Drupal Deployment.
   k8s:
