@@ -33,6 +33,17 @@
     - settings_config_map_name is defined
     - settings_config_map_mount_path is defined
 
+- name: Set PHP-FPM Volumes Object (if using port)
+  set_fact:
+    php_fpm_volume_mounts:
+      - mountPath: "{{ php_fpm_socket_mount_path }}"
+        name: php-fpm-socket
+    php_fpm_volumes:
+      - name: php-fpm-socket
+        emptyDir: {}
+  when:
+    - php_fpm_socket_mount_path is defined
+
 - name: Set Containers when we don't do volumes
   set_fact:
     __new_containers: "{{ item }}"
@@ -71,7 +82,7 @@
         tcpSocket:
           port: '{{ container_port }}'
         initialDelaySeconds: 30
-      volumeMounts: "{{ drupal_volume_mounts }}"
+      volumeMounts: "{{ drupal_volume_mounts + (php_fpm_volume_mounts | default([])) }}"
 
 - name: Set PHP-FPM Side Car if using php-fpm (with port)
   set_fact:
@@ -91,7 +102,7 @@
         tcpSocket:
           port: '{{ php_fpm_side_car_port }}'
         initialDelaySeconds: 30
-      volumeMounts: "{{ drupal_volume_mounts }}"
+      volumeMounts: "{{ drupal_volume_mounts + (php_fpm_volume_mounts | default([])) }}"
   when:
     - php_fpm_side_car is defined and php_fpm_side_car
     - php_fpm_side_car_port is defined
@@ -104,7 +115,7 @@
       hostname: '{{ ingress_hostname }}'
       command: '{{ php_fpm_side_car_command | default(omit) }}'
       args: '{{ php_fpm_side_car_args | default(omit) }}'
-      volumeMounts: "{{ drupal_volume_mounts }}"
+      volumeMounts: "{{ drupal_volume_mounts + (php_fpm_volume_mounts | default([])) }}"
   when:
     - php_fpm_side_car is defined and php_fpm_side_car
     - php_fpm_side_car_port is not defined
@@ -134,7 +145,7 @@
               {{ [drupal_container] }}
               {%- endif -%}
             initContainers: "{{ new_init_containers | default(omit) }}"
-            volumes: "{{ drupal_volumes }}"
+            volumes: "{{ drupal_volumes + (php_fpm_volumes | default([])) }}"
 
 - name: Drupal Service
   k8s:

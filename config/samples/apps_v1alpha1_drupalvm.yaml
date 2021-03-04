@@ -55,6 +55,8 @@ spec:
   phpFpmSideCarCommand: ['/usr/sbin/php-fpm7.4']
   phpFpmSideCarArgs: ['-OF']
   phpFpmSideCarPort: 9000
+  # if not using a port you can specify a socket mount dir
+  # phpFpmSocketMountPath: "/run/php-fpm"
 
   # add the drupal volumes to the init containers
   initContainersWithVolumes: true
