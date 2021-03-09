@@ -120,6 +120,12 @@
     - php_fpm_side_car is defined and php_fpm_side_car
     - php_fpm_side_car_port is not defined
 
+- name: Set TLS Certs Spec for Ingress
+  set_fact:
+    tls_certs_spec:
+      - secretName: "{{ ingress_tls_secret_name }}"
+  when: ingress_tls_secret_name is defined
+
 - name: Drupal Deployment.
   k8s:
     definition:
@@ -173,6 +179,7 @@
         name: '{{ ansible_operator_meta.name }}'
         namespace: '{{ ansible_operator_meta.namespace }}'
       spec:
+        tls: "{{ tls_certs_spec | default(omit) }}"
         rules:
           - host: '{{ ingress_hostname }}'
             http:
