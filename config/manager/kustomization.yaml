@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: quay.io/dmlb2000/drupal-operator
-  newTag: v0.2.3
+  newTag: v0.2.4

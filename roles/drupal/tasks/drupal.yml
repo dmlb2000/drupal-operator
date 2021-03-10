@@ -64,6 +64,12 @@
   set_fact:
     new_init_containers: "{{ init_containers_results.results | map(attribute='ansible_facts.__new_containers') | list }}"
 
+- name: Set Image Pull Secrets if defined
+  set_fact:
+    image_pull_secrets:
+      - name: "{{ container_image_pull_secret }}"
+  when: container_image_pull_secret is defined
+
 - name: Set Drupal Container
   set_fact:
     drupal_container:
@@ -150,6 +156,7 @@
               {%- else -%}
               {{ [drupal_container] }}
               {%- endif -%}
+            imagePullSecrets: "{{ image_pull_secrets | default(omit) }}"
             initContainers: "{{ new_init_containers | default(omit) }}"
             volumes: "{{ drupal_volumes + (php_fpm_volumes | default([])) }}"
 
