@@ -17,6 +17,7 @@ rules:
       - services
       - services/finalizers
       - ingresses
+      - ingresses/extensions
       - endpoints
       - persistentvolumeclaims
       - events
