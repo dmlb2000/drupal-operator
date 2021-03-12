@@ -14,6 +14,13 @@ rules:
       - pods
       - pods/exec
       - pods/log
+      - services
+      - services/finalizers
+      - endpoints
+      - persistentvolumeclaims
+      - events
+      - configmaps
+      - secrets
     verbs:
       - create
       - delete
