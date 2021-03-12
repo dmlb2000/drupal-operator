@@ -17,7 +17,6 @@ rules:
       - services
       - services/finalizers
       - ingresses
-      - ingresses/extensions
       - endpoints
       - persistentvolumeclaims
       - events
@@ -30,6 +29,15 @@ rules:
       - list
       - patch
       - update
+      - watch
+  - apiGroups:
+      - extensions
+      - "networking.k8s.io"
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
       - watch
   - apiGroups:
       - apps
