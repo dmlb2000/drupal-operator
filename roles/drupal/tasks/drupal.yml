@@ -129,7 +129,8 @@
 - name: Set TLS Certs Spec for Ingress
   set_fact:
     tls_certs_spec:
-      - secretName: "{{ ingress_tls_secret_name }}"
+      - host: '{{ ingress_hostname }}'
+        secretName: "{{ ingress_tls_secret_name }}"
   when: ingress_tls_secret_name is defined
 
 - name: Drupal Deployment.
